@@ -30,12 +30,12 @@ export function Board(){
             }
             setLogins(loginsCopy);
             socket.emit('login', { logins: loginsCopy });
+            
+            // Flip the boolean value of logged in for that user, this will allow the user to see the board
+            setIsLoggedIn((prevLoggedIn) => { // this will only run if username is entered, so it avoids null names
+                return !prevLoggedIn;  
+            });
         }
-        
-        // Flip the boolean value of logged in for that user, this will allow the user to see the board
-        setIsLoggedIn((prevLoggedIn) => {
-          return !prevLoggedIn;  
-        });
     }
     //console.log(logins);
     
