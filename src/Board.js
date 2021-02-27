@@ -3,6 +3,7 @@ import './Board.css';
 import { useState, useRef, useEffect } from 'react';
 import { Square } from './Square.js';
 import { calculateWinner } from './calculateWinner.js';
+import { isBoardFull } from './fullBoard.js';
 import { ListItem } from './ListItem.js';
 import io from 'socket.io-client';
 
@@ -82,9 +83,10 @@ export function Board(){
         );
     };
     
-    // find the winner using the calWin. component
+    // find the winner/loser/draw using the calWin. component
     let status;
-    const winner = calculateWinner(board);
+    const winner = calculateWinner(board); // checks if there are any winning combination
+    const boardFull = isBoardFull(board); // checks if the board is full 
     status = winner 
         ? `Player ${winner} is the winner! Congrats!`
         : `Player ${xIsNext ? "X" : "O"}'s turn`;
@@ -99,7 +101,12 @@ export function Board(){
             {isLoggedIn === true ? (
                 <div>
                     <div>Login successful! Welcome to tic tac toe {inputRef.current.value}!</div>
-                    <div className="status">{status}</div>
+                    {!winner && boardFull  === true ? (
+                        <div>It's a draw!</div>
+                        ) : (
+                        <div className="status">{status}</div>
+                        )
+                    }
                     <div className="board-row"> 
                         {renderSquare(0)}
                         {renderSquare(1)}  
