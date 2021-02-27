@@ -14,6 +14,7 @@ export function Board(){
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
     const [logins, setLogins] = useState({"playerX": "", "playerO": "", "spects": []});
+    const [isAPlayer, setAPlayer] = useState(true);
     
     function login(){
         const username = inputRef.current.value;
@@ -43,10 +44,14 @@ export function Board(){
     // this part handles the click event with either X or O depending on the turn
     function handleClick(index) {
         const squares = [...board];
+        const username = inputRef.current.value; //get the current username
         
         // if a certain square is filled or a winner is found, then this will not allow anyone to click
         if (calculateWinner(squares) || squares[index]) {
            return;
+        }
+        if (logins["spects"].includes(username)){ // this checks if the username is in the spectator list, so it doesn't allow them to click
+            return;
         }
         // if (spect.includes(users[]) || spect.includes(users.current.value)) {
         //     return;
