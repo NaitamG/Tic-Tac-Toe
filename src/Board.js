@@ -40,7 +40,6 @@ export function Board(){
     }
     //console.log(logins);
     
-    // this part handles the click event with either X or O depending on the turn
     function handleClick(index) {
         const squares = [...board];
         const username = inputRef.current.value; //get the current username
@@ -160,3 +159,4 @@ export function Board(){
         </div>
     );
 }
+export default Board;
