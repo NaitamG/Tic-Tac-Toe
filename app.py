@@ -24,6 +24,11 @@ def index(filename):
 def on_connect():
     print('User connected!')
 
+@socketio.on('login')
+def on_login(data):
+    print(data)
+    socketio.emit('login', data, broadcast=True, include_self=False)
+
 # When a client disconnects from this Socket connection, this function is run
 @socketio.on('disconnect')
 def on_disconnect():
