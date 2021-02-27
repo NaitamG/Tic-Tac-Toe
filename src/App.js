@@ -1,12 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
+import './Board.css';
 import { ListItem } from './ListItem.js';
 import { Board } from './Board.js';
 import { useState, useRef} from 'react';
 
 function App() {
   return (
-    <div>
+    <div className="board">
       <Board />
     </div>
   );

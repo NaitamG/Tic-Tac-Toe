@@ -102,7 +102,7 @@ export function Board(){
     // see which player won, and print the appropriate message
     status = winner 
         ? `Ayy ${xIsNext ? logins["playerO"] : logins["playerX"]} won!! Sorry ${xIsNext ? logins["playerX"] : logins["playerO"]}, you lost`
-        : `Player ${xIsNext ? "X" : "O"}'s turn...`;
+        : `It's player ${xIsNext ? "X" : "O"}'s turn...`;
     
     // this part sets up the board
     return (
@@ -113,13 +113,15 @@ export function Board(){
             </div>
             {isLoggedIn === true ? (
                 <div>
-                    <div>Login successful! Welcome to tic tac toe {username}!</div>
-                    {!winner && boardFull  === true ? (
-                        <div>It's a draw!</div>
-                        ) : (
-                        <div className="status">{status}</div>
-                        )
-                    }
+                    <div className="message">
+                        <div>Login successful! Welcome to tic tac toe {username}</div>
+                        {!winner && boardFull  === true ? (
+                            <div>It's a draw!</div>
+                            ) : (
+                            <div className="status">{status}</div>
+                            )
+                        }
+                    </div>
                     <div className="board-row"> 
                         {renderSquare(0)}
                         {renderSquare(1)}  
@@ -135,7 +137,7 @@ export function Board(){
                         {renderSquare(7)}
                         {renderSquare(8)}
                     </div>
-                    <div>
+                    <div className="players">
                         <h1>Players</h1>
                         <div>Player X: {logins["playerX"]}</div>
                         <div>Player O: {logins["playerO"]}</div>
@@ -147,7 +149,7 @@ export function Board(){
                 <div></div>
             )}
             {winner ? (
-                <div className="play-again">
+                <div className="playAgain">
                     <button onClick={() => setBoard(Array(9).fill(null), setXIsNext(true))}>Play again</button>
 
                 </div>
