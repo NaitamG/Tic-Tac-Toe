@@ -14,8 +14,7 @@ export function Board(){
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
     const [logins, setLogins] = useState({"playerX": "", "playerO": "", "spects": []});
-    const [isAPlayer, setAPlayer] = useState(true);
-    
+
     function login(){
         const username = inputRef.current.value;
         
@@ -80,21 +79,30 @@ export function Board(){
             setXIsNext(!data.xIsNext);
         });
     }, []);
-    console.log(logins);
+    
     // apply the change to the square with the correct index
     const renderSquare = (index) => {
         return (
             <Square value={board[index]} onClick={() => handleClick(index)} />
         );
     };
-    
-    // find the winner/loser/draw using the calWin. component
+
+    //Get the client's username
+    var username = inputRef.current;
+    if(username != null){
+        username = inputRef.current.value;
+    }
+    else{
+        username = null;
+    }
+
     let status;
     const winner = calculateWinner(board); // checks if there are any winning combination
-    const boardFull = isBoardFull(board); // checks if the board is full 
+    const boardFull = isBoardFull(board); // checks if the board is full
+    // see which player won, and print the appropriate message
     status = winner 
-        ? `Player ${winner} is the winner! Congrats!`
-        : `Player ${xIsNext ? "X" : "O"}'s turn`;
+        ? `Ayy ${xIsNext ? logins["playerO"] : logins["playerX"]} won!! Sorry ${xIsNext ? logins["playerX"] : logins["playerO"]}, you lost`
+        : `Player ${xIsNext ? "X" : "O"}'s turn...`;
     
     // this part sets up the board
     return (
@@ -105,7 +113,7 @@ export function Board(){
             </div>
             {isLoggedIn === true ? (
                 <div>
-                    <div>Login successful! Welcome to tic tac toe {inputRef.current.value}!</div>
+                    <div>Login successful! Welcome to tic tac toe {username}!</div>
                     {!winner && boardFull  === true ? (
                         <div>It's a draw!</div>
                         ) : (
@@ -138,6 +146,14 @@ export function Board(){
             ) : (
                 <div></div>
             )}
+            {winner ? (
+                <div className="play-again">
+                    <button onClick={() => setBoard(Array(9).fill(null))}>Play again</button>
+                </div>
+            ): (
+                <div></div>
+            )}
+            
         </div>
     );
 }
