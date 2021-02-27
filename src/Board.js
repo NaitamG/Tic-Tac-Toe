@@ -148,7 +148,8 @@ export function Board(){
             )}
             {winner ? (
                 <div className="play-again">
-                    <button onClick={() => setBoard(Array(9).fill(null))}>Play again</button>
+                    <button onClick={() => setBoard(Array(9).fill(null), setXIsNext(true))}>Play again</button>
+
                 </div>
             ): (
                 <div></div>
