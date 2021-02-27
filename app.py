@@ -26,7 +26,7 @@ def on_connect():
 
 @socketio.on('login')
 def on_login(data):
-    print(data)
+    #print(data)
     socketio.emit('login', data, broadcast=True, include_self=False)
 
 # When a client disconnects from this Socket connection, this function is run

@@ -9,32 +9,35 @@ import io from 'socket.io-client';
 const socket = io();
 export function Board(){
     const inputRef = useRef(null);
-    const [users, setUsers] = useState([]); // to store all users
-    const [spect, setSpect] = useState([]); // for the spectators that join later
     const [isLoggedIn, setIsLoggedIn] = useState(false); // to check if the user is logged in or not
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
-    
+    const [logins, setLogins] = useState({"playerX": "", "playerO": "", "spects": []});
     
     function login(){
         const username = inputRef.current.value;
-
-        // THIS ADDS THE USERNAMES IN A LIST FOR EVERY LOGIN INPUT
-        setUsers((prevUsers) => {
-            const listCopy = [...prevUsers];
-            listCopy.push(username);
-            if (listCopy.length > 2) { // get just the spectators and set it into a new array
-                setSpect(listCopy.slice(2));
+        
+        if(username){ // if there's a user input
+            var loginsCopy = {...logins};
+            if (logins["playerX"] == ""){
+                loginsCopy["playerX"] = username;
             }
-            socket.emit('login', {listCopy: listCopy}); // this sends the array to client
-            return listCopy;
-        });
+            else if (logins["playerO"] == ""){
+                loginsCopy["playerO"] = username;
+            }
+            else if (logins["playerX"] != "" && logins["playerO"] != ""){
+                loginsCopy["spects"].push(username);
+            }
+            setLogins(loginsCopy);
+            socket.emit('login', { logins: loginsCopy });
+        }
         
         // Flip the boolean value of logged in for that user, this will allow the user to see the board
         setIsLoggedIn((prevLoggedIn) => {
           return !prevLoggedIn;  
         });
     }
+    //console.log(logins);
     
     // this part handles the click event with either X or O depending on the turn
     function handleClick(index) {
@@ -44,22 +47,24 @@ export function Board(){
         if (calculateWinner(squares) || squares[index]) {
            return;
         }
+        // if (spect.includes(users[]) || spect.includes(users.current.value)) {
+        //     return;
+        // }
         squares[index] = xIsNext ? "X" : "O";
         socket.emit('move', {index: index, board: board, xIsNext: xIsNext });
         setBoard(squares);
         setXIsNext(!xIsNext);
     }
     
-    // for the logged in usernames
     useEffect(() => {
+        // for the logged in usernames
         socket.on('login', (data) => {
-            const usernames = [...data.listCopy];
-            setUsers(usernames);
+            var logins_response = {...data.logins};
+            setLogins(logins_response);
+            //console.log(logins_response);
         });
-    }, []);
-    
-    // for the player moves
-    useEffect(() => {
+        
+        // for the player moves
         socket.on('move', (data) => {
             const squares = [...data.board];
             //console.log("move recieved!");
@@ -69,7 +74,7 @@ export function Board(){
             setXIsNext(!data.xIsNext);
         });
     }, []);
-    
+    console.log(logins);
     // apply the change to the square with the correct index
     const renderSquare = (index) => {
         return (
@@ -112,10 +117,10 @@ export function Board(){
                     </div>
                     <div>
                         <h1>Players</h1>
-                        <div>Player X: {users[0]}</div>
-                        <div>Player O: {users[1]}</div>
+                        <div>Player X: {logins["playerX"]}</div>
+                        <div>Player O: {logins["playerO"]}</div>
                         <h1>Spectators</h1>
-                        {spect.map((item, index) => <ListItem key={index} name={item} /> )}
+                        {logins["spects"].map((item, index) => <ListItem key={index} name={item} /> )}
                     </div>
                 </div>
             ) : (
