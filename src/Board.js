@@ -34,11 +34,6 @@ export function Board(){
             }
             setLogins(loginsCopy);
             socket.emit('login', { logins: loginsCopy });
-            
-            // Flip the boolean value of logged in for that user, this will allow the user to see the board
-            /*setIsLoggedIn((prevLoggedIn) => { // this will only run if username is entered, so it avoids null names
-                return !prevLoggedIn;  
-            });*/
         }
     }
     //console.log(logins);
@@ -60,9 +55,6 @@ export function Board(){
         if (!xIsNext && username == logins["playerX"]){
             return;
         }
-        // if (spect.includes(users[]) || spect.includes(users.current.value)) {
-        //     return;
-        // }
         squares[index] = xIsNext ? "X" : "O";
         socket.emit('move', {index: index, board: board, xIsNext: xIsNext });
         setBoard(squares);
@@ -74,14 +66,11 @@ export function Board(){
         socket.on('login', (data) => {
             var logins_response = {...data.logins};
             setLogins(logins_response);
-            //console.log(logins_response);
         });
         
         // for the player moves
         socket.on('move', (data) => {
             const squares = [...data.board];
-            //console.log("move recieved!");
-            //console.log(data);
             squares[data.index] = data.xIsNext ? "X" : "O";
             setBoard(squares);
             setXIsNext(!data.xIsNext);
@@ -121,31 +110,33 @@ export function Board(){
             </div>
             {isLoggedIn === true ? (
                 <div>
-                    <div className="message">
-                        <div>Login successful! Welcome to tic tac toe {username}</div>
-                        {!winner && boardFull  === true ? (
-                            <div>It's a draw!</div>
-                            ) : (
-                            <div className="status">{status}</div>
-                            )
-                        }
+                    <div>
+                        <div className="message">
+                            <div>Login successful! Welcome to tic tac toe {username}</div>
+                            {!winner && boardFull  === true ? (
+                                <div>It's a draw!</div>
+                                ) : (
+                                <div className="status">{status}</div>
+                                )
+                            }
+                        </div>
+                        <div className="board-row"> 
+                            {renderSquare(0)}
+                            {renderSquare(1)}  
+                            {renderSquare(2)}
+                        </div>
+                        <div className="board-row"> 
+                            {renderSquare(3)}
+                            {renderSquare(4)}
+                            {renderSquare(5)}
+                        </div>
+                        <div className="board-row"> 
+                            {renderSquare(6)}
+                            {renderSquare(7)}
+                            {renderSquare(8)}
+                        </div>
                     </div>
-                    <div className="board-row"> 
-                        {renderSquare(0)}
-                        {renderSquare(1)}  
-                        {renderSquare(2)}
-                    </div>
-                    <div className="board-row"> 
-                        {renderSquare(3)}
-                        {renderSquare(4)}
-                        {renderSquare(5)}
-                    </div>
-                    <div className="board-row"> 
-                        {renderSquare(6)}
-                        {renderSquare(7)}
-                        {renderSquare(8)}
-                    </div>
-                    <div className="players">
+                    <div className="list">
                         <h1>Players</h1>
                         <div>Player X: {logins["playerX"]}</div>
                         <div>Player O: {logins["playerO"]}</div>
@@ -159,12 +150,10 @@ export function Board(){
             {winner ? (
                 <div className="playAgain">
                     <button onClick={() => setBoard(Array(9).fill(null), setXIsNext(true))}>Play again</button>
-
                 </div>
             ): (
                 <div></div>
             )}
-            
         </div>
     );
 }

@@ -2,8 +2,8 @@
   font-family: Arial, sans-serif
 }
 .board{
-  margin: 0;
-  padding: 20px;
+  margin: auto;
+  width: 50%;
 }
 .square {
   background: #b1cbbb;
@@ -31,8 +31,8 @@
 h1{
   font-size: 20px;
 }
-.players{
-  position: relative;
+.list{
+  text-align: center;
 }
 .login{
   margin: auto;
@@ -42,6 +42,8 @@ h1{
 .message{
   text-align: left;
   font-size: 18px;
+  text-align: center;
+  margin: 10px;
 }
 .playAgain{
   margin: auto;
