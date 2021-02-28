@@ -136,6 +136,13 @@ export function Board(){
                             {renderSquare(8)}
                         </div>
                     </div>
+                    {winner ? (
+                        <div className="playAgain">
+                            <button onClick={() => setBoard(Array(9).fill(null), setXIsNext(true))}>Play again</button>
+                        </div>
+                    ): (
+                        <div></div>
+                    )}
                     <div className="list">
                         <h1>Players</h1>
                         <div>Player X: {logins["playerX"]}</div>
@@ -145,13 +152,6 @@ export function Board(){
                     </div>
                 </div>
             ) : (
-                <div></div>
-            )}
-            {winner ? (
-                <div className="playAgain">
-                    <button onClick={() => setBoard(Array(9).fill(null), setXIsNext(true))}>Play again</button>
-                </div>
-            ): (
                 <div></div>
             )}
         </div>
