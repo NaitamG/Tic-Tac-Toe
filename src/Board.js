@@ -136,7 +136,7 @@ export function Board(){
                             {renderSquare(8)}
                         </div>
                     </div>
-                    {winner ? (
+                    {winner || boardFull ? (
                         <div className="playAgain">
                             <button onClick={() => setBoard(Array(9).fill(null), setXIsNext(true))}>Play again</button>
                         </div>
