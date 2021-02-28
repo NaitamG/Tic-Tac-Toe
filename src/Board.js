@@ -20,22 +20,25 @@ export function Board(){
         
         if(username){ // if there's a user input
             var loginsCopy = {...logins};
-            if (logins["playerX"] == ""){
+            if (logins["playerX"] == ""){ // only 
                 loginsCopy["playerX"] = username;
+                setIsLoggedIn(true);
             }
-            else if (logins["playerO"] == ""){
+            else if (logins["playerO"] == "" && logins["playerX"] != username){
                 loginsCopy["playerO"] = username;
+                setIsLoggedIn(true);
             }
-            else if (logins["playerX"] != "" && logins["playerO"] != ""){
+            else if (logins["playerX"] != "" && logins["playerO"] != "" && logins["playerX"] != username && logins["playerO"] != username){
                 loginsCopy["spects"].push(username);
+                setIsLoggedIn(true);
             }
             setLogins(loginsCopy);
             socket.emit('login', { logins: loginsCopy });
             
             // Flip the boolean value of logged in for that user, this will allow the user to see the board
-            setIsLoggedIn((prevLoggedIn) => { // this will only run if username is entered, so it avoids null names
+            /*setIsLoggedIn((prevLoggedIn) => { // this will only run if username is entered, so it avoids null names
                 return !prevLoggedIn;  
-            });
+            });*/
         }
     }
     //console.log(logins);
