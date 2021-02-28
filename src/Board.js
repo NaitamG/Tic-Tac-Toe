@@ -51,6 +51,12 @@ export function Board(){
         if (logins["spects"].includes(username)){ // this checks if the username is in the spectator list, so it doesn't allow them to click
             return;
         }
+        if (xIsNext && username == logins["playerO"]){
+            return;
+        }
+        if (!xIsNext && username == logins["playerX"]){
+            return;
+        }
         // if (spect.includes(users[]) || spect.includes(users.current.value)) {
         //     return;
         // }
@@ -100,7 +106,7 @@ export function Board(){
     const boardFull = isBoardFull(board); // checks if the board is full
     // see which player won, and print the appropriate message
     status = winner 
-        ? `Ayy ${xIsNext ? logins["playerO"] : logins["playerX"]} won!! Sorry ${xIsNext ? logins["playerX"] : logins["playerO"]}, you lost`
+        ? `Ayy ${xIsNext ? logins["playerO"] : logins["playerX"]} won!! Sorry ${xIsNext ? logins["playerX"] : logins["playerO"]}, you lost :(`
         : `It's player ${xIsNext ? "X" : "O"}'s turn...`;
     
     // this part sets up the board
