@@ -4,11 +4,21 @@ import './Board.css';
 import { ListItem } from './ListItem.js';
 import { Board } from './Board.js';
 import { useState, useRef} from 'react';
+import { LeaderBoard } from './LeaderBoard.js';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 function App() {
   return (
-    <div className="board">
-      <Board />
+    <div>
+      <Router>
+          <LeaderBoard />
+              <Switch>
+                <Route path='/' />
+              </Switch>
+      </Router>
+      <div className="board">
+        <Board />
+      </div>
     </div>
   );
 }
