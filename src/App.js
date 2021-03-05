@@ -13,6 +13,7 @@ function App() {
   const inputRef = useRef(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // to check if the user is logged in or not
   const [logins, setLogins] = useState({"playerX": "", "playerO": "", "spects": []});
+  const [leaderTable, setLeaderTable] = useState({});
   const [userGlobal, setUserGlobal] = useState("");
   
   function handleLogin(){
@@ -22,21 +23,29 @@ function App() {
     
     if(username){ // if there's a user input
         var loginsCopy = {...logins};
+        //var leaderTableCopy = {...leaderTable};
+        
         if (logins["playerX"] == ""){ // only 
             loginsCopy["playerX"] = username;
+            //leaderTableCopy["players"].push(username);
             setIsLoggedIn(true);
         }
         else if (logins["playerO"] == "" && logins["playerX"] != username){
             loginsCopy["playerO"] = username;
+            //leaderTableCopy["players"].push(username);
             setIsLoggedIn(true);
         }
         else if (logins["playerX"] != "" && logins["playerO"] != "" && logins["playerX"] != username && logins["playerO"] != username){
             loginsCopy["spects"].push(username);
+            //leaderTableCopy["players"].push(username);
             setIsLoggedIn(true);
         }
+        
         setLogins(loginsCopy);
-        console.log(loginsCopy);
+        //setLeaderTable(leaderTableCopy);
+        //console.log(loginsCopy);
         socket.emit('login', { logins: loginsCopy });
+        socket.emit('leaderboard', username );
     }
   }
   
@@ -46,7 +55,21 @@ function App() {
         var logins_response = {...data.logins};
         setLogins(logins_response);
     });
+    
+    socket.on('users-list', (data) => {
+        console.log("data recieved!");
+        console.log(data);
+        setLeaderTable(data.users);
+    });
+    
+    // for the leaderboard dictionary
+    socket.on('leaderboard', (data) => {
+        var username = {...data.username}
+        //var leaderTable = {...data.leaderboard}
+        //setLeaderTable(leaderTable["players"].push(username));
+    });
   }, []);
+  //console.log(leaderTable);
   
   return (
     <div>
@@ -72,7 +95,7 @@ function App() {
         ) : (
         <div className="login">
           <input ref={inputRef} type="text" placeholder="Enter username"/>
-          <button onClick={() => handleLogin()}>Login</button>
+          <button onClick={handleLogin}>Login</button>
         </div>
       )}
     </div>
@@ -80,54 +103,3 @@ function App() {
 }
 
 export default App;
-/*
-import logo from './logo.svg';
-import './App.css';
-import { ListItem } from './ListItem.js';
-import { useState, useRef, useEffect } from 'react';
-import io from 'socket.io-client';
-
-const socket = io(); // Connects to socket connection
-
-function App() {
-  const [messages, setMessages] = useState([]); // State variable, list of messages
-  const inputRef = useRef(null); // Reference to <input> element
-
-  function onClickButton() {
-    if (inputRef != null) {
-      const message = inputRef.current.value;
-      // If your own client sends a message, we add it to the list of messages to 
-      // render it on the UI.
-      setMessages(prevMessages => [...prevMessages, message]);
-      socket.emit('chat', { message: message });
-    }
-  }
-
-  // The function inside useEffect is only run whenever any variable in the array
-  // (passed as the second arg to useEffect) changes. Since this array is empty
-  // here, then the function will only run once at the very beginning of mounting.
-  useEffect(() => {
-    // Listening for a chat event emitted by the server. If received, we
-    // run the code in the function that is passed in as the second arg
-    socket.on('chat', (data) => {
-      console.log('Chat event received!');
-      console.log(data);
-      // If the server sends a message (on behalf of another client), then we
-      // add it to the list of messages to render it on the UI.
-      setMessages(prevMessages => [...prevMessages, data.message]);
-    });
-  }, []);
-
-  return (
-    <div>
-      <h1>Chat Messages</h1>
-      Enter message here: <input ref={inputRef} type="text" />
-      <button onClick={onClickButton}>Send</button>
-      <ul>
-        {messages.map((item, index) => <ListItem key={index} name={item} />)}
-      </ul>
-    </div>
-  );
-}
-
-export default App;*/

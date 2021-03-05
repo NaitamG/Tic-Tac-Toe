@@ -11,10 +11,9 @@ const socket = io();
 export function Board(props){
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
-    console.log(props.userGlobal);
     
     function handleClick(index) {
-        console.log(props.userGlobal);
+        //console.log(props.userGlobal);
         const squares = [...board];
         
         // if a certain square is filled or a winner is found, then this will not allow anyone to click

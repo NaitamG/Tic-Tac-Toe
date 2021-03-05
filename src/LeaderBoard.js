@@ -27,7 +27,7 @@ export function LeaderBoard(){
                         <tbody>
                             <tr>
                                 <td>Username</td>
-                                <td>Points</td>
+                                <td>Score</td>
                             </tr>
                         </tbody>
                     </table>
