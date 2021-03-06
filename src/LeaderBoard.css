@@ -54,3 +54,18 @@ tfoot {
 span {
   margin-left: 16px;
 }
+.userTable{
+    width: auto;
+    text-align: center;
+    margin: 0px;
+    float: left;
+}
+.scoreTable{
+    width: auto;
+    text-align: center;
+    margin: 0px;
+    float: left;
+}
+.loggedIn{
+    color: green;
+}

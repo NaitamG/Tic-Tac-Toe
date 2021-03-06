@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Square } from './Square.js';
 import { calculateWinner } from './calculateWinner.js';
 import { isBoardFull } from './fullBoard.js';
-import { Score } from './Score.js';
 import io from 'socket.io-client';
 
 const socket = io();
@@ -42,11 +41,11 @@ export function Board(props){
         socket.emit('reset', { board: Array(9).fill(null), xIsNext: true });
         console.log("HERERERER");
         // check if x is next, if it's then x is the loser, or else o is the loser
-        if(xIsNext && props.userGlobal == props.logins["playerX"]){
+        if(xIsNext){
             console.log("and player O won");
             socket.emit('score', {userWin: props.logins["playerO"], userLose: props.logins["playerX"]});
         }
-        else if(!xIsNext && props.userGlobal == props.logins["playerX"]){
+        else if(!xIsNext){
             console.log("and player X won");
             socket.emit('score', {userWin: props.logins["playerX"], userLose: props.logins["playerO"]});
         }
@@ -117,6 +116,7 @@ export function Board(props){
             {winner || boardFull ? (
                 <div>
                     <div className="playAgain">
+                        <a>Click play again to record match results!</a><br></br>
                         <button onClick={() => reset()}>Play again</button>
                     </div>
                     {winner = null, boardFull = false}

@@ -3,6 +3,7 @@ import './LeaderBoard.css';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ListUser } from './ListUser.js';
+import { ListItem } from './ListItem.js'
 import { ListScore } from './ListScore.js';
 
 export function LeaderBoard(props){
@@ -20,24 +21,35 @@ export function LeaderBoard(props){
                     <li className="menu-toggle">
                         <Link to='#' className="menu">X</Link>
                     </li>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Score</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                {props.userTable.map((user, index)  => <ListUser key={index} user={user} /> )}
-                                {props.scoreTable.map((score, index) => <ListScore key={index} score={score} /> )}
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div className="leadTable">
+                        <table className="userTable">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    {props.userTable.map((user, index)  => <ListUser logins={props.logins} key={index} user={user} /> )}
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table className="scoreTable">
+                            <thead>
+                                <tr>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    {props.scoreTable.map((score, index) => <ListScore key={index} score={score} /> )}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </ul>
             </nav>
         </div>
     );
 }
-
 export default LeaderBoard;

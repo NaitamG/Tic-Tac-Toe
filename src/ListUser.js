@@ -1,8 +1,21 @@
 import React from 'react';
+import './LeaderBoard.css';
 
 export function ListUser(props){
-    return (
-            <td>{props.user}</td>
-    );
+    
+    if(props.logins["spects"].includes(props.user) || props.user == props.logins["playerO"] || props.user == props.logins["playerX"]){
+        return (
+            <div className="loggedIn">
+                {props.user}
+            </div>
+        );
+    }else{
+        return (
+            <div>
+                {props.user}
+            </div>
+        );
+    }
+    
 }
 export default ListUser;

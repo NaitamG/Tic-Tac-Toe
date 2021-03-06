@@ -74,7 +74,7 @@ function App() {
       {isLoggedIn === true ? (
         <div>
           <Router>
-              <LeaderBoard userTable={userTable} scoreTable={scoreTable} />
+              <LeaderBoard userTable={userTable} scoreTable={scoreTable} logins={logins}/>
                   <Switch>
                     <Route path='/' />
                   </Switch>

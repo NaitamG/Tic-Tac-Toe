@@ -1,8 +1,9 @@
 import React from 'react';
+import './LeaderBoard.css';
 
 export function ListScore(props){
-    return (
-            <td>{props.score}</td>
-    );
+    return <div>
+        {props.score}
+    </div>;
 }
 export default ListScore;

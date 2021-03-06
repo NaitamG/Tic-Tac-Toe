@@ -123,6 +123,7 @@ def on_chat(data): # data is whatever arg you pass in your emit call on client
 
 @SOCKETIO.on('reset')
 def on_reset(data):
+    """This resets the board and xisnext values to the starting values for all clients"""
     SOCKETIO.emit('reset', data, broadcast=True, include_self=False)
     
 @SOCKETIO.on('move')
