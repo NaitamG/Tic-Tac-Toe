@@ -53,7 +53,7 @@ def on_init(data):
     #print(data)
     players = db.session.query(models.Leaderboard).order_by(desc(models.Leaderboard.score)).all()
     
-    print(players)
+    #print(players)
     for player in players:
         leaderboard["players"].append(player.username) # copy the username from the table to the dictionary
         leaderboard["score"].append(player.score)

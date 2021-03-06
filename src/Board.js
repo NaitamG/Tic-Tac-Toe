@@ -39,14 +39,19 @@ export function Board(props){
         setBoard(Array(9).fill(null));
         setXIsNext(true);
         socket.emit('reset', { board: Array(9).fill(null), xIsNext: true });
-        console.log("HERERERER");
+        //console.log("HERERERER");
         // check if x is next, if it's then x is the loser, or else o is the loser
+        console.log(!winner);
+        console.log(boardFull);
+        if(!winner && boardFull){ // to handle draw
+            return;
+        }
         if(xIsNext){
-            console.log("and player O won");
+            //console.log("and player O won");
             socket.emit('score', {userWin: props.logins["playerO"], userLose: props.logins["playerX"]});
         }
         else if(!xIsNext){
-            console.log("and player X won");
+            //console.log("and player X won");
             socket.emit('score', {userWin: props.logins["playerX"], userLose: props.logins["playerO"]});
         }
     }
@@ -119,7 +124,6 @@ export function Board(props){
                         <a>Click play again to record match results!</a><br></br>
                         <button onClick={() => reset()}>Play again</button>
                     </div>
-                    {winner = null, boardFull = false}
                 </div>
             ): (
                 <div></div>
