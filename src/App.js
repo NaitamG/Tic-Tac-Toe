@@ -13,7 +13,8 @@ function App() {
   const inputRef = useRef(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // to check if the user is logged in or not
   const [logins, setLogins] = useState({"playerX": "", "playerO": "", "spects": []});
-  const [leaderTable, setLeaderTable] = useState({});
+  const [userTable, setUserTable] = useState([]);
+  const [scoreTable, setScoreTable] = useState([]);
   const [userGlobal, setUserGlobal] = useState("");
   
   function handleLogin(){
@@ -23,31 +24,32 @@ function App() {
     
     if(username){ // if there's a user input
         var loginsCopy = {...logins};
-        //var leaderTableCopy = {...leaderTable};
+        const userTableCopy = [...userTable];
+        const scoreTableCopy = [...scoreTable];
         
         if (logins["playerX"] == ""){ // only 
             loginsCopy["playerX"] = username;
-            //leaderTableCopy["players"].push(username);
             setIsLoggedIn(true);
         }
         else if (logins["playerO"] == "" && logins["playerX"] != username){
             loginsCopy["playerO"] = username;
-            //leaderTableCopy["players"].push(username);
             setIsLoggedIn(true);
         }
         else if (logins["playerX"] != "" && logins["playerO"] != "" && logins["playerX"] != username && logins["playerO"] != username){
             loginsCopy["spects"].push(username);
-            //leaderTableCopy["players"].push(username);
             setIsLoggedIn(true);
         }
         
         setLogins(loginsCopy);
-        //setLeaderTable(leaderTableCopy);
-        //console.log(loginsCopy);
-        socket.emit('login', { logins: loginsCopy });
-        socket.emit('leaderboard', username );
+        setUserTable(userTableCopy);
+        setScoreTable(scoreTableCopy);
+
+        socket.emit('login', { logins: loginsCopy, username: username});
+        socket.emit('initial-table', {userTable: userTableCopy, scoreTable: scoreTableCopy});
     }
   }
+  console.log(userTable);
+  console.log(scoreTable);
   
   useEffect(() => {
     // for the logged in usernames
@@ -55,34 +57,30 @@ function App() {
         var logins_response = {...data.logins};
         setLogins(logins_response);
     });
-    
-    socket.on('users-list', (data) => {
-        console.log("data recieved!");
+    // this gets the previous persisted data from the table so it can be used in the Leaderboard component
+    socket.on('initial-table', (data) => {
         console.log(data);
-        setLeaderTable(data.users);
+        var tempUser = [...data.userTable];
+        var tempScore = [...data.scoreTable];
+        //setTable(data);
+        setUserTable(tempUser);
+        setScoreTable(tempScore);
     });
-    
-    // for the leaderboard dictionary
-    socket.on('leaderboard', (data) => {
-        var username = {...data.username}
-        //var leaderTable = {...data.leaderboard}
-        //setLeaderTable(leaderTable["players"].push(username));
-    });
+
   }, []);
-  //console.log(leaderTable);
   
   return (
     <div>
       {isLoggedIn === true ? (
         <div>
           <Router>
-              <LeaderBoard />
+              <LeaderBoard userTable={userTable} scoreTable={scoreTable} />
                   <Switch>
                     <Route path='/' />
                   </Switch>
           </Router>
           <div className="board">
-            <Board logins={logins} setLogins={setLogins} isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userGlobal={userGlobal}/>
+            <Board userGlobal={userGlobal} logins={logins} userTable={userTable} scoreTable={scoreTable} />
           </div>
           <div className="list">
               <h1>Players</h1>

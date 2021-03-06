@@ -4,13 +4,14 @@ import { useState, useRef, useEffect } from 'react';
 import { Square } from './Square.js';
 import { calculateWinner } from './calculateWinner.js';
 import { isBoardFull } from './fullBoard.js';
-//import { Login } from './Login.js';
+import { Score } from './Score.js';
 import io from 'socket.io-client';
 
 const socket = io();
 export function Board(props){
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
+    const [gameOver, setGameOver] = useState(false);
     
     function handleClick(index) {
         //console.log(props.userGlobal);
@@ -18,7 +19,7 @@ export function Board(props){
         
         // if a certain square is filled or a winner is found, then this will not allow anyone to click
         if (calculateWinner(squares) || squares[index]) {
-           return;
+            return;
         }
         if (props.logins["spects"].includes(props.userGlobal)){ // this checks if the username is in the spectator list, so it doesn't allow them to click
             return;
@@ -29,10 +30,26 @@ export function Board(props){
         if (!xIsNext && props.userGlobal == props.logins["playerX"]){
             return;
         }
+        
         squares[index] = xIsNext ? "X" : "O";
         socket.emit('move', {index: index, board: board, xIsNext: xIsNext });
         setBoard(squares);
         setXIsNext(!xIsNext);
+    }
+    function reset(){
+        setBoard(Array(9).fill(null));
+        setXIsNext(true);
+        socket.emit('reset', { board: Array(9).fill(null), xIsNext: true });
+        console.log("HERERERER");
+        // check if x is next, if it's then x is the loser, or else o is the loser
+        if(xIsNext && props.userGlobal == props.logins["playerX"]){
+            console.log("and player O won");
+            socket.emit('score', {userWin: props.logins["playerO"], userLose: props.logins["playerX"]});
+        }
+        else if(!xIsNext && props.userGlobal == props.logins["playerX"]){
+            console.log("and player X won");
+            socket.emit('score', {userWin: props.logins["playerX"], userLose: props.logins["playerO"]});
+        }
     }
     
     useEffect(() => {
@@ -43,6 +60,13 @@ export function Board(props){
             setBoard(squares);
             setXIsNext(!data.xIsNext);
         });
+        
+        // for reset button
+        socket.on('reset', (data) => {
+            const squares = [...data.board];
+            setBoard(squares);
+            setXIsNext(xIsNext);
+        });
     }, []);
     
     // apply the change to the square with the correct index
@@ -51,10 +75,11 @@ export function Board(props){
             <Square value={board[index]} onClick={() => handleClick(index)} />
         );
     };
-
+    
+    var winner = calculateWinner(board); // checks if there are any winning combination
+    var boardFull = isBoardFull(board); // checks if the board is full
+    
     let status;
-    const winner = calculateWinner(board); // checks if there are any winning combination
-    const boardFull = isBoardFull(board); // checks if the board is full
     // see which player won, and print the appropriate message
     status = winner 
         ? `Ayy ${xIsNext ? props.logins["playerO"] : props.logins["playerX"]} won!! Sorry ${xIsNext ? props.logins["playerX"] : props.logins["playerO"]}, you lost :(`
@@ -65,7 +90,7 @@ export function Board(props){
         <div>
             <div>
                 <div className="message">
-                    <div>Login successful! Welcome to tic tac toe {props.userGlobal}</div>
+                    <div>Welcome to tic tac toe {props.userGlobal}</div>
                     {!winner && boardFull  === true ? (
                         <div>It's a draw!</div>
                         ) : (
@@ -90,8 +115,11 @@ export function Board(props){
                 </div>
             </div>
             {winner || boardFull ? (
-                <div className="playAgain">
-                    <button onClick={() => setBoard(Array(9).fill(null), setXIsNext(true))}>Play again</button>
+                <div>
+                    <div className="playAgain">
+                        <button onClick={() => reset()}>Play again</button>
+                    </div>
+                    {winner = null, boardFull = false}
                 </div>
             ): (
                 <div></div>

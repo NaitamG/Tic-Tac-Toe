@@ -2,8 +2,10 @@ import React from 'react';
 import './LeaderBoard.css';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ListUser } from './ListUser.js';
+import { ListScore } from './ListScore.js';
 
-export function LeaderBoard(){
+export function LeaderBoard(props){
     const [leaderboard, setLeaderboard] = useState(false); // to show and hide the leaderboard
     const showLeaderboard = () => setLeaderboard(!leaderboard);
 
@@ -21,13 +23,14 @@ export function LeaderBoard(){
                     <table>
                         <thead>
                             <tr>
-                                <th colspan="2">Leaderboard</th>
+                                <th>Username</th>
+                                <th>Score</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Username</td>
-                                <td>Score</td>
+                                {props.userTable.map((user, index)  => <ListUser key={index} user={user} /> )}
+                                {props.scoreTable.map((score, index) => <ListScore key={index} score={score} /> )}
                             </tr>
                         </tbody>
                     </table>
