@@ -1,5 +1,5 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 
 export function isBoardFull(squares) {
   for (let i = 0; i < squares.length; i++) {

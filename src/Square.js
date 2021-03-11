@@ -1,7 +1,7 @@
-import React from 'react';
-import './Board.css';
+import React from "react";
+import "./Board.css";
 
-export function Square(props){
+export function Square(props) {
   return (
     <div className="board">
       <button className="square" onClick={props.onClick}>
@@ -10,6 +10,5 @@ export function Square(props){
     </div>
   );
 }
-
 
 export default Square;

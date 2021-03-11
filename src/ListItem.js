@@ -1,7 +1,5 @@
-import React from 'react';
+import React from "react";
 
-export function ListItem(props){
-    return <div>
-        {props.name}
-    </div>;
+export function ListItem(props) {
+  return <div>{props.name}</div>;
 }
