@@ -23,8 +23,11 @@ tfoot {
     color: #fff;
     margin-left: 20px;
     font-size: 15px;
+    text-transform: capitalize;
     background: none;
+    border: none;
     text-decoration: none;
+    padding: 0px;
 }
 .nav-menu{
     background-color: #060b26;

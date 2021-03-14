@@ -1,14 +1,20 @@
-import React from "react";
-import "./Board.css";
+import React from 'react';
+import './Board.css';
+import PropTypes from 'prop-types';
 
-export function Square(props) {
+export function Square({ value, onClick }) {
   return (
     <div className="board">
-      <button className="square" onClick={props.onClick}>
-        {props.value}
+      <button type="submit" className="square" onClick={onClick}>
+        {value}
       </button>
     </div>
   );
 }
+
+Square.propTypes = {
+  value: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired,
+};
 
 export default Square;

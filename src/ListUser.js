@@ -1,15 +1,25 @@
-import React from "react";
-import "./LeaderBoard.css";
+import React from 'react';
+import './LeaderBoard.css';
+import PropTypes from 'prop-types';
 
-export function ListUser(props) {
+export function ListUser({ logins, user }) {
   if (
-    props.logins["spects"].includes(props.user) ||
-    props.user == props.logins["playerO"] ||
-    props.user == props.logins["playerX"]
+    logins.spects.includes(user)
+    || user === logins.playerO
+    || user === logins.playerX
   ) {
-    return <div className="loggedIn">{props.user}</div>;
-  } else {
-    return <div>{props.user}</div>;
+    return <div className="loggedIn">{user}</div>;
   }
+  return <div>{user}</div>;
 }
+
+ListUser.propTypes = {
+  user: PropTypes.string.isRequired,
+  logins: PropTypes.shape({
+    playerX: PropTypes.string,
+    playerO: PropTypes.string,
+    spects: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+};
+
 export default ListUser;

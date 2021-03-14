@@ -1,16 +1,13 @@
-from app import db
+"""This models the table that the db access"""
+from app import DB
 
-class Leaderboard(db.Model):
-    username = db.Column(
-        db.String(80),
-        unique=True,
-        nullable=False,
-        primary_key=True
+class Leaderboard(DB.Model):
+    """This setsup the table on the python side with two columns"""
+
+    username = DB.Column(
+        DB.String(80), unique=True, nullable=False, primary_key=True
     )
-    score = db.Column(
-        db.Integer, 
-        default=100,
-        nullable=False
-    )
+    score = DB.Column(DB.Integer, default=100, nullable=False)
+
     def __repr__(self):
         return '<Leaderboard %r>' % self.username

@@ -1,29 +1,29 @@
-import React from "react";
-import "./LeaderBoard.css";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ListUser } from "./ListUser.js";
-import { ListItem } from "./ListItem.js";
-import { ListScore } from "./ListScore.js";
+import React, { useState } from 'react';
+import './LeaderBoard.css';
 
-export function LeaderBoard(props) {
+// import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { ListUser } from './ListUser';
+import { ListScore } from './ListScore';
+
+export function LeaderBoard({ userTable, scoreTable, logins }) {
   const [leaderboard, setLeaderboard] = useState(false); // to show and hide the leaderboard
   const showLeaderboard = () => setLeaderboard(!leaderboard);
 
   return (
     <div>
       <div className="leaderboard">
-        <Link to="#" className="menu" onClick={showLeaderboard}>
+        <button className="menu" type="submit" onClick={showLeaderboard} onKeyDown={showLeaderboard}>
           Leaderboard
-        </Link>
+        </button>
       </div>
 
-      <nav className={leaderboard ? "nav-menu active" : "nav-menu"}>
-        <ul className="nav-menu-items" onClick={showLeaderboard}>
+      <nav className={leaderboard ? 'nav-menu active' : 'nav-menu'}>
+        <ul className="nav-menu-items">
           <li className="menu-toggle">
-            <Link to="#" className="menu">
+            <button type="submit" to="#" className="menu" onClick={showLeaderboard} onKeyDown={showLeaderboard}>
               X
-            </Link>
+            </button>
           </li>
           <div className="leadTable">
             <table className="userTable">
@@ -34,8 +34,8 @@ export function LeaderBoard(props) {
               </thead>
               <tbody>
                 <tr>
-                  {props.userTable.map((user, index) => (
-                    <ListUser logins={props.logins} key={index} user={user} />
+                  {userTable.map((user, index) => (
+                    <ListUser logins={logins} key={index} user={user} />
                   ))}
                 </tr>
               </tbody>
@@ -48,7 +48,7 @@ export function LeaderBoard(props) {
               </thead>
               <tbody>
                 <tr>
-                  {props.scoreTable.map((score, index) => (
+                  {scoreTable.map((score, index) => (
                     <ListScore key={index} score={score} />
                   ))}
                 </tr>
@@ -60,4 +60,15 @@ export function LeaderBoard(props) {
     </div>
   );
 }
+
+LeaderBoard.propTypes = {
+  userTable: PropTypes.arrayOf(PropTypes.string).isRequired,
+  scoreTable: PropTypes.arrayOf(PropTypes.string).isRequired,
+  logins: PropTypes.shape({
+    playerX: PropTypes.string,
+    playerO: PropTypes.string,
+    spects: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
+};
+
 export default LeaderBoard;

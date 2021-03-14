@@ -1,5 +1,11 @@
-import React from "react";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export function ListItem(props) {
-  return <div>{props.name}</div>;
+export function ListItem({ name }) {
+  return <div>{name}</div>;
 }
+
+ListItem.propTypes = {
+  name: PropTypes.string.isRequired,
+};
+export default ListItem;
