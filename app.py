@@ -48,25 +48,28 @@ def on_connect():
 def on_init(data):
     """This get the values from the table that's already stored in the db"""
     leaderboard = {"players": [], "score": []}
-    #players = models.Leaderboard.query.all()
-    #print(data)
+    
+    # get the leaderboard
+    get_leaderboard(leaderboard)
+
+    data["userTable"] = leaderboard["players"]
+    data["scoreTable"] = leaderboard["score"]
+    
+    SOCKETIO.emit(
+        'initial-table', data, broadcast=True, include_self=True
+    )    # initially send the client the list from the db table
+
+def get_leaderboard(leaderboard):
     players = DB.session.query(models.Leaderboard
                                ).order_by(desc(models.Leaderboard.score)).all()
 
-    #print(players)
     for player in players:
         leaderboard["players"].append(
             player.username
         )    # copy the username from the table to the dictionary
         leaderboard["score"].append(player.score)
 
-    data["userTable"] = leaderboard["players"]
-    data["scoreTable"] = leaderboard["score"]
-    #print(data)
-    SOCKETIO.emit(
-        'initial-table', data, broadcast=True, include_self=True
-    )    # initially send the client the list from the db table
-
+    return leaderboard
 
 @SOCKETIO.on('score')
 def on_score(data):
@@ -75,22 +78,11 @@ def on_score(data):
     update_users = []
     update_scores = []
 
-    #print(data)
-    winner = DB.session.query(models.Leaderboard
-                              ).filter_by(username=data['userWin']).first()
-    loser = DB.session.query(models.Leaderboard
-                             ).filter_by(username=data['userLose']).first()
-    winner.score = winner.score + 1
-    loser.score = loser.score - 1
+    # inc/dec the score in the db
+    adjust_score(data['userWin'], data['userLose'])
 
-    players = DB.session.query(models.Leaderboard
-                               ).order_by(desc(models.Leaderboard.score)).all()
-    for player in players:
-        update_users.append(player.username)
-        update_scores.append(player.score)
-
-    DB.session.commit()
-    DB.session.close()
+    # append to the user and score columns
+    update_table(update_users, update_scores)
 
     SOCKETIO.emit(
         'initial-table', {
@@ -101,21 +93,51 @@ def on_score(data):
         include_self=True
     )
 
+def adjust_score(winner, loser):
+    winner = DB.session.query(models.Leaderboard
+                              ).filter_by(username=winner).first()
+    loser = DB.session.query(models.Leaderboard
+                             ).filter_by(username=loser).first()
+    winner.score = winner.score + 1
+    loser.score = loser.score - 1
+    
+    DB.session.commit()
+    DB.session.close()
+
+def update_table(users, scores):
+    players = DB.session.query(models.Leaderboard
+                               ).order_by(desc(models.Leaderboard.score)).all()
+    for player in players:
+        users.append(player.username)
+        scores.append(player.score)
+
+    DB.session.commit()
+    DB.session.close()
+    
+    return users, scores
 
 @SOCKETIO.on('login')
 def on_login(data):
     """This gets the login socket data from the client an passes it back to other clients"""
     # check if the username is already in the db table, if not then add the username into db table
-    in_table = models.Leaderboard.query.filter_by(username=data["username"]
-                                                 ).first() is not None
-
+    in_table = check_table(data["username"])
+    
     if not in_table:
-        add_user = models.Leaderboard(username=data["username"], score=100)
-        DB.session.add(add_user)
-        DB.session.commit()
-        DB.session.close()
+        not_in_table(data["username"]) # add user with default score
 
     SOCKETIO.emit('login', data, broadcast=True, include_self=False)
+
+def check_table(username):
+    in_table = models.Leaderboard.query.filter_by(username=username
+                                                 ).first() is not None
+    return in_table
+    
+def not_in_table(username):
+    add_user = models.Leaderboard(username=username, score=100)
+
+    DB.session.add(add_user)
+    DB.session.commit()
+    DB.session.close()
 
 # When a client disconnects from this Socket connection, this function is run
 @SOCKETIO.on('disconnect')
