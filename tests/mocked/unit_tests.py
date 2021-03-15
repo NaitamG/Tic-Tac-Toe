@@ -60,12 +60,8 @@ class NotInTable(unittest.TestCase):
                         with patch('models.Leaderboard.query') as mocked_query:
                             mocked_query.all = self.mocked_person_query_all
 
-                            #print(self.initial_db_mock)
                             actual_result = not_in_table(test[KEY_INPUT])
-                            #print(actual_result)
                             expected_result = test[KEY_EXPECTED]
-                            #print(self.initial_db_mock)
-                            #print(expected_result)
                             
                             self.assertEqual(len(actual_result), len(expected_result))
                             self.assertEqual(actual_result[1], expected_result[1])
@@ -122,12 +118,8 @@ class CheckTable(unittest.TestCase):
         for test in self.check_table_test_params:
             with patch('models.Leaderboard.query') as mocked_query:
 
-                print(self.initial_db_mock)
                 actual_result = check_table(test[KEY_INPUT])
-                print(actual_result)
                 expected_result = test[KEY_EXPECTED]
-                print(self.initial_db_mock)
-                print(expected_result)
                 
                 self.assertEqual(actual_result, expected_result)
                 self.assertTrue(actual_result)
