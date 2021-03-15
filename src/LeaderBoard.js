@@ -22,7 +22,7 @@ export function LeaderBoard({ userTable, scoreTable, logins }) {
         <ul className="nav-menu-items">
           <li className="menu-toggle">
             <button type="submit" to="#" className="menu" onClick={showLeaderboard} onKeyDown={showLeaderboard}>
-              X
+              x
             </button>
           </li>
           <div className="leadTable">

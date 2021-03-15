@@ -10,20 +10,17 @@ from unittest.mock import patch
 sys.path.append(os.path.abspath('../../'))
 from app import *
 
+KEY_INPUT = "input"
+KEY_EXPECTED = "expected"
 
-USER_INPUT = "users"
-SCORE_INPUT = "scores"
-EXPECTED_USER_OUTPUT = "user table"
-EXPECTED_SCORE_OUTPUT = "score table"
+INITIAL_USERNAME = 'user1'
 
-class updateTable(unittest.TestCase):
+class UpdateTable(unittest.TestCase):
     def setUp(self):
-        self.updat_table_test_params = [
+        self.update_table_test_params = [
             {
-                USER_INPUT: [],
-                SCORE_INPUT: [],
-                EXPECTED_USER_OUTPUT: [],
-                EXPECTED_SCORE_OUTPUT: []
+                KEY_INPUT: [],
+                KEY_EXPECTED: []
             },
             {
                 USER_INPUT: ["first"],
@@ -32,30 +29,51 @@ class updateTable(unittest.TestCase):
                 EXPECTED_SCORE_OUTPUT: []
             },
             {
-                USER_INPUT: ["first", "second"],
+                USER_INPUT: ["second", "first"],
                 SCORE_INPUT: [101, 200],
                 EXPECTED_USER_OUTPUT: [],
                 EXPECTED_SCORE_OUTPUT: []
             },
             {
-                USER_INPUT: ["this", "that"],
+                USER_INPUT: [],
                 SCORE_INPUT: [],
                 EXPECTED_USER_OUTPUT: [],
                 EXPECTED_SCORE_OUTPUT: []
             },
         ]
+        initial_list = DB.session.query(models.Leaderboard)
+        self.initial_db_mock = [initial_list]
+    
+    def mocked_db_session_commit(self):
+        pass
+    
+    def mocked_db_session_close(self):
+        pass
         
+    def mocked_player_query_order(self, order):
+        
+        return self.initial_db_mock
+    
+    def mocked_player_query_all(self):
+        return self.initial_db_mock
+    
     def test_check_table(self):
-        for test in self.updat_table_test_params:
-            # TODO: Make a call to add user with your test inputs
-            # then assign it to a variable
-            actual_result = update_table(test[USER_INPUT], test[SCORE_INPUT])
-            print(actual_result)
-            # Assign the expected output as a variable from test
-            expected_result = test[EXPECTED_OUTPUT]
-
-            # Use assert checks to see compare values of the results
-            #self.assertEqual(actual_result, expected_result)
+        for test in self.update_table_test_params:
+            with patch('app.DB.session.commit', self.mocked_db_session_commit):
+                with patch('app.DB.session.close', self.mocked_db_session_close):
+                    with patch('models.Leaderboard.query') as mocked_query:
+                        mocked_query.order(desc(models.Leaderboard.score)) = self.mocked_player_query_order
+                        mocked_query.all = self.mocked_player_query_all
+    
+                        print(self.initial_db_mock)
+                        actual_result = add_user(test[KEY_INPUT])
+                        print(actual_result)
+                        expected_result = test[KEY_EXPECTED]
+                        print(self.initial_db_mock)
+                        print(expected_result)
+                        
+                        self.assertEqual(len(actual_result), len(expected_result))
+                        self.assertEqual(actual_result[1], expected_result[1])
 
 if __name__ == '__main__':
     unittest.main()

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 export function Square({ value, onClick }) {
   return (
     <div className="board">
-      <button type="submit" className="square" onClick={onClick}>
+      <button data-testid="boxClick" type="submit" className="square" onClick={onClick}>
         {value}
       </button>
     </div>
@@ -13,7 +13,7 @@ export function Square({ value, onClick }) {
 }
 
 Square.propTypes = {
-  value: PropTypes.number.isRequired,
+  value: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 

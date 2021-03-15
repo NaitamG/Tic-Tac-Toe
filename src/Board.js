@@ -81,9 +81,6 @@ export function Board({ userGlobal, logins }) {
   // apply the change to the square with the correct index
   const renderBox = (index) => <Square value={board[index]} onClick={() => handleClick(index)} />;
 
-  // var winner = calculateWinner(board); // checks if there are any winning combination
-  // var boardFull = isBoardFull(board); // checks if the board is full
-
   let status = '';
   // see which player won, and print the appropriate message
   status = winner

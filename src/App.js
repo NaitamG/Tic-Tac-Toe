@@ -59,8 +59,6 @@ function App() {
       });
     }
   }
-  console.log(userTable);
-  console.log(scoreTable);
 
   useEffect(() => {
     // for the logged in usernames
@@ -93,8 +91,8 @@ function App() {
               <Route path="/" />
             </Switch>
           </Router>
-          <div className="board">
-            <Board
+          <div data-testid="tictactoe" className="board">
+            <Board 
               userGlobal={userGlobal}
               logins={logins}
             />
