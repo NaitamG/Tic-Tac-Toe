@@ -68,7 +68,6 @@ function App() {
     });
     // this gets the previous persisted data from the table for Leaderboard component
     socket.on('initial-table', (data) => {
-      console.log(data);
       const tempUser = [...data.userTable];
       const tempScore = [...data.scoreTable];
 
@@ -92,7 +91,7 @@ function App() {
             </Switch>
           </Router>
           <div data-testid="tictactoe" className="board">
-            <Board 
+            <Board
               userGlobal={userGlobal}
               logins={logins}
             />

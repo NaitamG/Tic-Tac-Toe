@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { render, screen, fireEvent } from "@testing-library/react";
 //import { shallow } from 'enzyme';
 import App from "./App";

@@ -143,6 +143,12 @@ def not_in_table(username):
     DB.session.commit()
     DB.session.close()
 
+    all_people = models.Leaderboard.query.all()
+    users = []
+    for person in all_people:
+        users.append(person.username)
+    return users
+
 
 # When a client disconnects from this Socket connection, this function is run
 @SOCKETIO.on('disconnect')
